@@ -1,0 +1,169 @@
+services:
+  # OpenVINO pose extraction service
+  openvino:
+    build:
+      context: ./ai/openvino
+      dockerfile: Dockerfile
+    container_name: repright-openvino
+    ports:
+      - "8001:8001"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./ai/openvino/users_videos:/usr/src/app/users_videos
+      - ./ai/openvino/csv_results:/usr/src/app/csv_results
+    networks:
+      - repright-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+
+  # LSTM Autoencoder analysis service
+  autoencoder:
+    build:
+      context: ./ai/lstm_autoencoder
+      dockerfile: Dockerfile
+    container_name: repright-autoencoder
+    ports:
+      - "8003:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - GROQ_API_KEY=${GROQ_API_KEY}
+    env_file:
+      - backend/.env
+    volumes:
+      - ./ai/openvino/users_videos:/usr/src/app/users_videos
+      - ./ai/user_videos_skel:/app/user_videos_skel
+      - ./ai/lstm_autoencoder:/app  # Mount code for development
+
+    networks:
+      - repright-network
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+
+  # Training plan generator service
+  training-plan:
+    build:
+      context: ./ai/training_plan
+      dockerfile: Dockerfile
+    container_name: repright-training-plan
+    ports:
+      - "8004:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - GROQ_API_KEY=${GROQ_API_KEY}
+    env_file:
+      - backend/.env
+    volumes:
+      - ./ai/training_plan:/app
+    networks:
+      - repright-network
+    restart: unless-stopped
+
+  # PostgreSQL database
+  postgres:
+    image: postgres:15-alpine
+    container_name: repright-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-neuralcoach}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-neuralcoach_password}
+      - POSTGRES_DB=${POSTGRES_DB:-neuralcoach_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - repright-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-neuralcoach}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Gateway service (FastAPI)
+  gateway:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: repright-gateway
+    ports:
+      - "8002:8002"
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - OPENVINO_SERVICE_URL=http://openvino:8001
+      - AUTOENCODER_SERVICE_URL=http://autoencoder:8000
+      - DATABASE_URL=postgresql://neuralcoach:3wR8mZqP2xJ1kUe7@postgres:5432/neuralcoach_db
+      - MAIL_SERVER=mailhog
+    volumes:
+      - ./ai/user_videos_skel:/app/user_videos_skel
+    depends_on:
+      postgres:
+        condition: service_healthy
+      openvino:
+        condition: service_healthy
+      autoencoder:
+        condition: service_healthy
+    networks:
+      - repright-network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8002/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+  # MailHog service for email testing
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: repright-mailhog
+    ports:
+      - "1025:1025"  # SMTP server
+      - "8025:8025"  # Web UI
+    environment:
+      - MH_SMTP_BIND_ADDR=0.0.0.0:1025
+      - MH_UI_BIND_ADDR=0.0.0.0:8025
+      - MH_API_BIND_ADDR=0.0.0.0:8025
+      - MH_STORAGE=memory
+    networks:
+      - repright-network
+    restart: unless-stopped
+
+  # Flutter Web frontend - DISABLED (using Next.js locally instead)
+  # frontend:
+  #   build:
+  #     context: ./flutter_app
+  #     dockerfile: Dockerfile
+  #   container_name: repright-frontend
+  #   ports:
+  #     - "3000:80"
+  #   networks:
+  #     - repright-network
+  #   depends_on:
+  #     - gateway
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost/health"]
+  #     interval: 30s
+  #     timeout: 5s
+  #     retries: 3
+  #     start_period: 10s
+  #   restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  repright-network:
+    driver: bridge

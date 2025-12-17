@@ -1,0 +1,13 @@
+/dataset_csv
+/dataset_videos
+/.venv
+/csv_results
+/users_videos
+__pycache__/
+/__pycache__
+/results
+./venv
+/venv
+.DS_Store
+/build
+.env

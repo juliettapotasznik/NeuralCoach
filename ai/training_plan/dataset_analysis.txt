@@ -1,0 +1,104 @@
+Statistics by Difficulty Level:
+
+Difficulty: BEGINNER
+  Total exercises: 194
+  Unique movement_patterns: 18
+
+  Movement patterns:
+    - cardio: 32
+    - core: 18
+    - flexibility: 75
+    - glute_isolation: 6
+    - hinge: 4
+    - horizontal_pull: 5
+    - horizontal_push: 4
+    - isolation_biceps: 6
+    - isolation_calves: 4
+    - isolation_chest: 4
+    - isolation_hamstrings: 5
+    - isolation_quads: 3
+    - isolation_shoulders: 5
+    - isolation_triceps: 4
+    - lunge: 4
+    - squat: 7
+    - vertical_pull: 5
+    - vertical_push: 3
+
+Difficulty: INTERMEDIATE
+  Total exercises: 1010
+  Unique movement_patterns: 22
+
+  Movement patterns:
+    - cardio: 20
+    - compound: 5
+    - core: 141
+    - glute_isolation: 41
+    - hinge: 22
+    - horizontal_pull: 79
+    - horizontal_push: 49
+    - isolation_biceps: 110
+    - isolation_calves: 41
+    - isolation_chest: 76
+    - isolation_forearms: 25
+    - isolation_hamstrings: 14
+    - isolation_lats: 33
+    - isolation_quads: 6
+    - isolation_shoulders: 90
+    - isolation_spine: 16
+    - isolation_triceps: 97
+    - isolation_upper_back: 7
+    - lunge: 18
+    - squat: 66
+    - vertical_pull: 30
+    - vertical_push: 24
+
+Difficulty: ADVANCED
+  Total exercises: 160
+  Unique movement_patterns: 15
+
+  Movement patterns:
+    - compound: 5
+    - core: 9
+    - glute_isolation: 4
+    - hinge: 7
+    - horizontal_pull: 19
+    - isolation_biceps: 25
+    - isolation_chest: 26
+    - isolation_forearms: 7
+    - isolation_lats: 6
+    - isolation_shoulders: 11
+    - isolation_triceps: 21
+    - isolation_upper_back: 2
+    - squat: 7
+    - vertical_pull: 5
+    - vertical_push: 6
+
+SUMMARY
+
+Total exercises in dataset: 1364
+Total unique movement_patterns: 23
+
+Movement patterns across all difficulties:
+  - cardio: 52
+  - compound: 10
+  - core: 168
+  - flexibility: 75
+  - glute_isolation: 51
+  - hinge: 33
+  - horizontal_pull: 103
+  - horizontal_push: 53
+  - isolation_biceps: 141
+  - isolation_calves: 45
+  - isolation_chest: 106
+  - isolation_forearms: 32
+  - isolation_hamstrings: 19
+  - isolation_lats: 39
+  - isolation_quads: 9
+  - isolation_shoulders: 106
+  - isolation_spine: 16
+  - isolation_triceps: 122
+  - isolation_upper_back: 9
+  - lunge: 22
+  - squat: 80
+  - vertical_pull: 40
+  - vertical_push: 33

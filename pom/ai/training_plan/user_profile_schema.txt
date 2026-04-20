@@ -1,0 +1,8 @@
+
+- [ ] goal: build_muscle, lose_weight, improve_endurance, improve_flexibility, improve_overall_fitness, other
+- [ ] experience_level: beginner, intermediate, advanced
+- [ ] training_location: gym, home
+- [ ] available_days_per_week: 3-5
+- [ ] training_focus: full_body, specified_group_muscle(glutes, arms, legs, chest, shoulders, core, back (can choose few ))
+- [ ] session_duration_max OPTIONAL min=60
+- [ ] equipment if training_locatin = home

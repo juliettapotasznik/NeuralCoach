@@ -1,8 +1,0 @@
-{
-    "goal": "build_muscle",
-    "experience_level": "beginner",
-    "training_location": "gym",
-    "available_days_per_week": 3,
-    "session_duration_max": 60,
-    "training_focus": ["glutes", "arms", "chest", "back"]
-}
